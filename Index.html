@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional Quiz Portal</title>
+
+<style>
+body{
+  font-family: Arial;
+  background:#eef2f7;
+  margin:0;
+  padding:0;
+}
+.container{
+  max-width:850px;
+  margin:40px auto;
+  background:#fff;
+  padding:30px;
+  border-radius:12px;
+  box-shadow:0 0 15px rgba(0,0,0,0.1);
+}
+h1{text-align:center;}
+#timer{
+  float:right;
+  color:red;
+  font-size:20px;
+  font-weight:bold;
+}
+.progress{
+  width:100%;
+  background:#ddd;
+  border-radius:10px;
+  margin:20px 0;
+}
+.progress-bar{
+  height:20px;
+  width:0%;
+  background:#4caf50;
+  border-radius:10px;
+}
+.question{
+  margin-bottom:25px;
+}
+button{
+  padding:12px 25px;
+  border:none;
+  background:#4caf50;
+  color:white;
+  font-size:18px;
+  border-radius:8px;
+  cursor:pointer;
+}
+button:hover{
+  background:#45a049;
+}
+#result{
+  text-align:center;
+  font-size:24px;
+  color:#333;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>ऑनलाइन परीक्षा पोर्टल</h1>
+<div id="timer">60</div>
+
+<label>छात्र का नाम:</label>
+<input type="text" id="studentName" placeholder="अपना नाम लिखें" style="width:100%;padding:10px;margin:10px 0;">
+
+<div class="progress">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<form id="quizForm">
+
+<div class="question">
+<p>1. भारत का संविधान कब लागू हुआ?</p>
+<label><input type="radio" name="q1" value="0"> 15 अगस्त 1947</label><br>
+<label><input type="radio" name="q1" value="1"> 26 जनवरी 1950</label><br>
+<label><input type="radio" name="q1" value="0"> 26 नवंबर 1949</label><br>
+<label><input type="radio" name="q1" value="0"> 2 अक्टूबर 1950</label>
+</div>
+
+<div class="question">
+<p>2. लोकतंत्र की सफलता की शर्त क्या है?</p>
+<label><input type="radio" name="q2" value="0"> केवल मतदान</label><br>
+<label><input type="radio" name="q2" value="1"> सामाजिक और आर्थिक लोकतंत्र</label><br>
+<label><input type="radio" name="q2" value="0"> सेना</label><br>
+<label><input type="radio" name="q2" value="0"> राजनीतिक दल</label>
+</div>
+
+<div class="question">
+<p>3. नव-मानववाद किससे संबंधित है?</p>
+<label><input type="radio" name="q3" value="0"> गांधी</label><br>
+<label><input type="radio" name="q3" value="1"> एम.एन. राय</label><br>
+<label><input type="radio" name="q3" value="0"> नेहरू</label><br>
+<label><input type="radio" name="q3" value="0"> लोहिया</label>
+</div>
+
+<button type="button" onclick="submitQuiz()">Submit Exam</button>
+
+</form>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+let totalQuestions = 3;
+let timeLeft = 60;
+
+let timer = setInterval(function(){
+  document.getElementById("timer").innerText = "समय: " + timeLeft + " सेकंड";
+  timeLeft--;
+
+  if(timeLeft < 0){
+    clearInterval(timer);
+    submitQuiz();
+  }
+},1000);
+
+document.querySelectorAll('input[type="radio"]').forEach(input=>{
+  input.addEventListener("change", updateProgress);
+});
+
+function updateProgress(){
+  let answered = 0;
+  for(let i=1;i<=totalQuestions;i++){
+    if(document.querySelector('input[name="q'+i+'"]:checked')){
+      answered++;
+    }
+  }
+  let percent = (answered/totalQuestions)*100;
+  document.getElementById("progressBar").style.width = percent + "%";
+}
+
+function submitQuiz(){
+  clearInterval(timer);
+
+  let score = 0;
+  for(let i=1;i<=totalQuestions;i++){
+    let ans = document.querySelector('input[name="q'+i+'"]:checked');
+    if(ans){
+      score += parseInt(ans.value);
+    }
+  }
+
+  let name = document.getElementById("studentName").value || "Student";
+
+  document.getElementById("quizForm").style.display="none";
+  document.getElementById("result").innerHTML =
+    "<h2>"+name+"</h2><p>आपका स्कोर: <strong>"+score+" / "+totalQuestions+"</strong></p>";
+}
+</script>
+
+</body>
+</html>
